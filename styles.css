@@ -5,6 +5,8 @@
   --muted: #475569;
   --line: #dbeafe;
   --soft: #eff6ff;
+  --blue: #2563eb;           /* синий для рамок месяцев */
+  --blueSoft: #eaf2ff;
 
   --radius: 18px;
   --shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
@@ -48,6 +50,8 @@ body{
   letter-spacing: -0.02em;
 }
 
+/* ===== Основные панели ===== */
+
 .panel{
   background: var(--card);
   border: 1px solid var(--line);
@@ -66,6 +70,27 @@ body{
   letter-spacing: -0.02em;
   text-transform: lowercase;
 }
+
+/* ===== СИНЯЯ РАМКА МЕСЯЦА ===== */
+
+.panel{
+  position: relative;
+}
+
+/* рамка вокруг месячного блока */
+.panel:not(.panel--tight){
+  border: 2px solid var(--blue);
+  background: linear-gradient(180deg, #ffffff 0%, var(--blueSoft) 100%);
+}
+
+/* усиление заголовка месяца */
+.panel__title{
+  color: var(--blue);
+  border-bottom: 2px solid rgba(37, 99, 235, 0.25);
+  padding-bottom: 6px;
+}
+
+/* ===== Плитки ===== */
 
 .stack{
   display: grid;
@@ -110,6 +135,8 @@ body{
   gap: 10px;
 }
 
+/* ===== Квадраты ===== */
+
 .row2{
   display: grid;
   gap: 10px;
@@ -139,7 +166,8 @@ body{
   line-height: 1.05;
 }
 
-/* Цвета по требованиям */
+/* ===== Цвета по требованиям ===== */
+
 .red { color: #b91c1c; }     /* цифры Дахн., В.Вел, сумарно */
 .green { color: #16a34a; }   /* електро */
 .black { color: #0f172a; }   /* копілка */
@@ -149,5 +177,3 @@ body{
   .tile--big .tile__value{ font-size: 38px; }
   .square__value{ font-size: 30px; }
 }
-
-
