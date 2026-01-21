@@ -1,0 +1,18 @@
+{
+  "deposit": 18000,
+  "piggy": 4600,
+  "months": {
+    "feb": {
+      "d": null,
+      "vv": null,
+      "elektro": null,
+      "note": ""
+    },
+    "jan": {
+      "d": 3115,
+      "vv": 2030,
+      "elektro": -820,
+      "note": ""
+    }
+  }
+}
