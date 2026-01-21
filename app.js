@@ -63,5 +63,101 @@
     l.textContent = labelText;
 
     var v = document.createElement("div");
-    v.className = "tile
+    v.className = "tile__value";
+    if (valueClass) v.classList.add(valueClass);
+    v.textContent = valueText;
+
+    tile.appendChild(l);
+    tile.appendChild(v);
+    return tile;
+  }
+
+  function buildMonthBlock(targetEl, monthData) {
+    targetEl.innerHTML = "";
+
+    var d = safeIntOrNull(monthData && monthData.d);
+    var vv = safeIntOrNull(monthData && monthData.vv);
+    var elektro = safeIntOrNull(monthData && monthData.elektro);
+    var sum = computeSum(d, vv, elektro);
+
+    var piggyMonth = safeIntOrNull(monthData && monthData.piggyMonth);
+
+    // row with two squares (values must be RED)
+    var row2 = document.createElement("div");
+    row2.className = "row2";
+
+    row2.appendChild(
+      cardItemSquare("платіж", showMoneyWithPrefix("Д.", d), "red")
+    );
+    row2.appendChild(
+      cardItemSquare("платіж", showMoneyWithPrefix("В.В.", vv), "red")
+    );
+
+    // elektro rect (GREEN always, even if negative)
+    var elektroText;
+    if (elektro === null) {
+      elektroText = "—";
+    } else {
+      elektroText = "(" + (elektro < 0 ? "" : "+") + formatUAH(elektro) + " електро)";
+    }
+    var elektroTile = tileBlock("електро", elektroText, (elektro === null ? "dim" : "green"), "");
+
+    // sum rect (RED value)
+    var sumText = (sum === null) ? "—" : formatUAH(sum);
+    var sumTile = tileBlock("сумарно", sumText, (sum === null ? "dim" : "red"), "tile--soft");
+
+    // piggy rect per month (BLACK value)
+    var piggyText = (piggyMonth === null) ? "—" : formatUAH(piggyMonth);
+    var piggyTile = tileBlock("копілка", piggyText, (piggyMonth === null ? "dim" : "black"), "");
+
+    // optional note
+    if (monthData && typeof monthData.note === "string" && monthData.note.trim()) {
+      var noteTile = tileBlock("примітка", monthData.note.trim(), "black", "");
+      noteTile.querySelector(".tile__value").style.fontSize = "22px";
+      noteTile.querySelector(".tile__value").style.fontWeight = "900";
+      targetEl.appendChild(noteTile);
+    }
+
+    targetEl.appendChild(row2);
+    targetEl.appendChild(elektroTile);
+    targetEl.appendChild(sumTile);
+    targetEl.appendChild(piggyTile);
+  }
+
+  function setText(id, text) {
+    var el = $(id);
+    if (el) el.textContent = text;
+  }
+
+  function load() {
+    fetch("./data.json", { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Не вдалося завантажити data.json (" + res.status + ")");
+        return res.json();
+      })
+      .then(function (data) {
+        var deposit = safeIntOrNull(data.deposit);
+        var piggy = safeIntOrNull(data.piggy);
+
+        setText("depositValue", deposit === null ? "—" : (formatUAH(deposit) + " ₴"));
+        setText("piggyValue", piggy === null ? "—" : (formatUAH(piggy) + " ₴"));
+
+        var jan = data.months && data.months.jan ? data.months.jan : null;
+        var feb = data.months && data.months.feb ? data.months.feb : null;
+
+        buildMonthBlock($("month-jan"), jan);
+        buildMonthBlock($("month-feb"), feb);
+      })
+      .catch(function (e) {
+        setText("depositValue", "—");
+        setText("piggyValue", "—");
+        buildMonthBlock($("month-jan"), null);
+        buildMonthBlock($("month-feb"), null);
+        try { console.error(e); } catch (_) {}
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", load);
+})();
+
 
