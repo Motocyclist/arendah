@@ -4,7 +4,6 @@
   --text: #0f172a;
   --muted: #475569;
   --line: #dbeafe;
-  --accent: #2563eb;
   --soft: #eff6ff;
 
   --radius: 18px;
@@ -28,14 +27,6 @@ body{
   background: linear-gradient(180deg, #ffffff 0%, var(--bg) 60%, var(--bg) 100%);
 }
 
-code{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.95em;
-  background: #f1f5f9;
-  padding: 2px 6px;
-  border-radius: 10px;
-}
-
 .container{
   width: min(var(--container), calc(100% - 20px));
   margin: 14px auto 32px;
@@ -55,12 +46,6 @@ code{
   font-size: var(--fs-4);
   font-weight: 950;
   letter-spacing: -0.02em;
-}
-.brand__subtitle{
-  margin-top: 2px;
-  font-size: var(--fs-2);
-  color: var(--muted);
-  font-weight: 700;
 }
 
 .panel{
@@ -142,7 +127,7 @@ code{
 
 .square__label{
   font-size: var(--fs-2);
-  color: var(--muted);
+  color: var(--text);     /* подписи чёрные */
   font-weight: 950;
 }
 
@@ -154,14 +139,15 @@ code{
   line-height: 1.05;
 }
 
-/* Требования по цветам */
-.red { color: #b91c1c; }     /* Д., В.В., сумарно — красные цифры */
-.green { color: #16a34a; }   /* електро — зелёная */
-.black { color: #0f172a; }   /* копілка — чёрная */
-.dim { color: var(--muted); }/* прочерки */
+/* Цвета по требованиям */
+.red { color: #b91c1c; }     /* цифры Дахн., В.Вел, сумарно */
+.green { color: #16a34a; }   /* електро */
+.black { color: #0f172a; }   /* копілка */
+.dim { color: var(--muted); }
 
-.footer{
-  margin-top: 16px;
-  color: var(--muted);
-  font-size:
+@media (max-width: 420px){
+  .tile--big .tile__value{ font-size: 38px; }
+  .square__value{ font-size: 30px; }
+}
+
 
