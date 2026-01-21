@@ -6,12 +6,14 @@
       "d": null,
       "vv": null,
       "elektro": null,
+      "piggyMonth": null,
       "note": ""
     },
     "jan": {
       "d": 3115,
       "vv": 2030,
       "elektro": -820,
+      "piggyMonth": 4600,
       "note": ""
     }
   }
