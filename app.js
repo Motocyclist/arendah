@@ -7,21 +7,15 @@
     if (n === null || n === undefined) return "—";
     if (typeof n !== "number" || !isFinite(n)) return "—";
 
-    var sign = n < 0 ? "-" : "";
     var abs = Math.abs(Math.round(n));
     var s = String(abs);
     var out = "";
     while (s.length > 3) {
-      out = "\u202F" + s.slice(-3) + out; // narrow no-break space
+      out = "\u202F" + s.slice(-3) + out;
       s = s.slice(0, -3);
     }
     out = s + out;
-    return sign + out;
-  }
-
-  function showMoneyWithPrefix(prefix, n) {
-    var v = (n === null || n === undefined) ? "—" : formatUAH(n);
-    return prefix + " " + v;
+    return out;
   }
 
   function safeIntOrNull(x) {
@@ -36,7 +30,7 @@
     return d + vv + elektro;
   }
 
-  function cardItemSquare(labelText, valueText, valueClass) {
+  function squareBlock(labelText, valueNumber) {
     var sq = document.createElement("div");
     sq.className = "square";
 
@@ -45,26 +39,26 @@
     l.textContent = labelText;
 
     var v = document.createElement("div");
-    v.className = "square__value";
-    if (valueClass) v.classList.add(valueClass);
-    v.textContent = valueText;
+    v.className = "square__value red";
+    v.textContent = (valueNumber === null ? "—" : formatUAH(valueNumber));
+
+    if (valueNumber === null) v.classList.add("dim");
 
     sq.appendChild(l);
     sq.appendChild(v);
     return sq;
   }
 
-  function tileBlock(labelText, valueText, valueClass, tileClass) {
+  function tileBlock(labelText, valueText, valueClass, soft) {
     var tile = document.createElement("div");
-    tile.className = "tile" + (tileClass ? (" " + tileClass) : "");
+    tile.className = "tile" + (soft ? " tile--soft" : "");
 
     var l = document.createElement("div");
     l.className = "tile__label";
     l.textContent = labelText;
 
     var v = document.createElement("div");
-    v.className = "tile__value";
-    if (valueClass) v.classList.add(valueClass);
+    v.className = "tile__value " + valueClass;
     v.textContent = valueText;
 
     tile.appendChild(l);
@@ -79,44 +73,25 @@
     var vv = safeIntOrNull(monthData && monthData.vv);
     var elektro = safeIntOrNull(monthData && monthData.elektro);
     var sum = computeSum(d, vv, elektro);
-
     var piggyMonth = safeIntOrNull(monthData && monthData.piggyMonth);
 
-    // row with two squares (values must be RED)
     var row2 = document.createElement("div");
     row2.className = "row2";
 
-    row2.appendChild(
-      cardItemSquare("платіж", showMoneyWithPrefix("Д.", d), "red")
-    );
-    row2.appendChild(
-      cardItemSquare("платіж", showMoneyWithPrefix("В.В.", vv), "red")
-    );
+    row2.appendChild(squareBlock("Дахн.", d));
+    row2.appendChild(squareBlock("В.Вел", vv));
 
-    // elektro rect (GREEN always, even if negative)
-    var elektroText;
-    if (elektro === null) {
-      elektroText = "—";
-    } else {
-      elektroText = "(" + (elektro < 0 ? "" : "+") + formatUAH(elektro) + " електро)";
-    }
-    var elektroTile = tileBlock("електро", elektroText, (elektro === null ? "dim" : "green"), "");
+    var elektroText = (elektro === null)
+      ? "—"
+      : "(" + (elektro < 0 ? "" : "+") + formatUAH(elektro) + " електро)";
 
-    // sum rect (RED value)
+    var elektroTile = tileBlock("електро", elektroText, (elektro === null ? "dim" : "green"), false);
+
     var sumText = (sum === null) ? "—" : formatUAH(sum);
-    var sumTile = tileBlock("сумарно", sumText, (sum === null ? "dim" : "red"), "tile--soft");
+    var sumTile = tileBlock("сумарно", sumText, (sum === null ? "dim" : "red"), true);
 
-    // piggy rect per month (BLACK value)
     var piggyText = (piggyMonth === null) ? "—" : formatUAH(piggyMonth);
-    var piggyTile = tileBlock("копілка", piggyText, (piggyMonth === null ? "dim" : "black"), "");
-
-    // optional note
-    if (monthData && typeof monthData.note === "string" && monthData.note.trim()) {
-      var noteTile = tileBlock("примітка", monthData.note.trim(), "black", "");
-      noteTile.querySelector(".tile__value").style.fontSize = "22px";
-      noteTile.querySelector(".tile__value").style.fontWeight = "900";
-      targetEl.appendChild(noteTile);
-    }
+    var piggyTile = tileBlock("копілка", piggyText, (piggyMonth === null ? "dim" : "black"), false);
 
     targetEl.appendChild(row2);
     targetEl.appendChild(elektroTile);
@@ -131,10 +106,7 @@
 
   function load() {
     fetch("./data.json", { cache: "no-store" })
-      .then(function (res) {
-        if (!res.ok) throw new Error("Не вдалося завантажити data.json (" + res.status + ")");
-        return res.json();
-      })
+      .then(function (res) { return res.json(); })
       .then(function (data) {
         var deposit = safeIntOrNull(data.deposit);
         var piggy = safeIntOrNull(data.piggy);
@@ -142,22 +114,13 @@
         setText("depositValue", deposit === null ? "—" : (formatUAH(deposit) + " ₴"));
         setText("piggyValue", piggy === null ? "—" : (formatUAH(piggy) + " ₴"));
 
-        var jan = data.months && data.months.jan ? data.months.jan : null;
-        var feb = data.months && data.months.feb ? data.months.feb : null;
-
-        buildMonthBlock($("month-jan"), jan);
-        buildMonthBlock($("month-feb"), feb);
-      })
-      .catch(function (e) {
-        setText("depositValue", "—");
-        setText("piggyValue", "—");
-        buildMonthBlock($("month-jan"), null);
-        buildMonthBlock($("month-feb"), null);
-        try { console.error(e); } catch (_) {}
+        buildMonthBlock($("month-jan"), data.months.jan || null);
+        buildMonthBlock($("month-feb"), data.months.feb || null);
       });
   }
 
   document.addEventListener("DOMContentLoaded", load);
 })();
+
 
 
