@@ -6,19 +6,15 @@
   --line: #dbeafe;
   --accent: #2563eb;
   --soft: #eff6ff;
-  --danger: #b91c1c;
 
   --radius: 18px;
   --shadow: 0 10px 26px rgba(15, 23, 42, 0.10);
 
-  --tap: 52px;
   --container: 760px;
 
-  --fs-1: 14px;
   --fs-2: 16px;
   --fs-3: 18px;
   --fs-4: 22px;
-  --fs-5: 28px;
   --fs-6: 34px;
   --fs-7: 42px;
 }
@@ -158,21 +154,14 @@ code{
   line-height: 1.05;
 }
 
-.neg{ color: var(--danger); }
-.dim{ color: var(--muted); }
+/* Требования по цветам */
+.red { color: #b91c1c; }     /* Д., В.В., сумарно — красные цифры */
+.green { color: #16a34a; }   /* електро — зелёная */
+.black { color: #0f172a; }   /* копілка — чёрная */
+.dim { color: var(--muted); }/* прочерки */
 
 .footer{
   margin-top: 16px;
   color: var(--muted);
-  font-size: var(--fs-2);
-  font-weight: 700;
-}
+  font-size:
 
-@media (max-width: 420px){
-  .tile--big .tile__value{ font-size: 38px; }
-  .square__value{ font-size: 30px; }
-}
-
-@media (prefers-reduced-motion: reduce){
-  *{ scroll-behavior: auto !important; }
-}
