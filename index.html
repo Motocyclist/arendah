@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Оренда: депозит і копілка</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__title">Оренда</div>
+      <div class="brand__subtitle">Коротко і великими цифрами</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel panel--tight">
+      <div class="stack">
+        <div class="tile tile--big">
+          <div class="tile__label">депозит</div>
+          <div class="tile__value" id="depositValue">—</div>
+        </div>
+
+        <div class="tile tile--big tile--soft">
+          <div class="tile__label">копілка</div>
+          <div class="tile__value" id="piggyValue">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel__title">лютий</h2>
+      <div id="month-feb" class="month"></div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel__title">січень</h2>
+      <div id="month-jan" class="month"></div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__line">
+        Цифри змінюються у файлі <code>data.json</code>.
+      </div>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
